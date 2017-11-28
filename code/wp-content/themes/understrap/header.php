@@ -21,7 +21,6 @@ $container = get_theme_mod( 'understrap_container_type' );
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 	<?php wp_head(); ?>
-	<link href="https://fonts.googleapis.com/css?family=Jacques+Francois|Montserrat|Playfair+Display:400,700" rel="stylesheet">
 </head>
 
 <body <?php body_class(); ?>>
@@ -71,7 +70,7 @@ $container = get_theme_mod( 'understrap_container_type' );
 						'menu_class'      => 'navbar-nav',
 						'fallback_cb'     => '',
 						'menu_id'         => 'main-menu',
-						'walker'          => new WP_Bootstrap_Navwalker(),
+						'walker'          => new understrap_WP_Bootstrap_Navwalker(),
 					)
 				); ?>
 			<?php if ( 'container' == $container ) : ?>

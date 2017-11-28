@@ -1,0 +1,84 @@
+
+
+// Global
+h1 {
+	font-family: $playfair;
+	font-size: 3.5rem;
+}
+
+h2,
+h3,
+h4,
+h5 {
+	font-family: 'Montserrat', sans-serif;
+	text-transform: uppercase;
+}
+
+body {
+	font-family: 'Jacques Francois', serif;
+}
+
+img {
+	height: 100%;
+}
+
+
+// Navigation
+nav {
+	&.navbar {
+		background: #fff !important;
+	}
+
+	.nav-link {
+    	color: $primary !important;
+	}
+
+	.navbar-collapse {
+		flex-grow: 0;
+	}
+
+	.navbar-brand img {
+		max-width: 300px;
+	}
+}
+
+// Page Banner
+
+.banner-text {
+	text-align: center;
+	position: absolute;
+    width: 100%;
+    top: 20vw;
+    .text-background {
+    	padding: 20px 60px;
+    	max-width: 600px;
+    	margin: 0 auto;
+    	border: 2px solid #000;
+    	&.light {
+    		background: rgba(255,255,255,0.8);
+    	}
+    	&.dark {
+    		background: rgba(0,0,0,0.6);
+    		color: #fff;
+    		.btn-outline-primary, .wpcf7 input[type=submit] {
+    			color: #fff;
+    			border-color: #fff;
+    		}
+    	}
+    }
+}
+
+// How It Works Columns
+.how-columns {
+    text-align: center;
+    .how-icons {
+        font-size: 2rem;
+    }
+    .how-header {
+        font-size: 1.25rem;
+    }
+    a:hover {
+        text-decoration: none;
+    }
+}
+

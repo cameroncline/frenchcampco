@@ -18,9 +18,9 @@ require get_template_directory() . '/inc/setup.php';
 require get_template_directory() . '/inc/widgets.php';
 
 /**
- * Load functions to secure your WP install.
+ * Load functions to secure your WP install. 
  */
-require get_template_directory() . '/inc/security.php';
+// require get_template_directory() . '/inc/security.php';
 
 /**
  * Enqueue scripts and styles.
@@ -71,8 +71,3 @@ require get_template_directory() . '/inc/woocommerce.php';
  * Load Editor functions.
  */
 require get_template_directory() . '/inc/editor.php';
-
-/**
- * Load Custom functions.
- */
-require get_template_directory() . '/inc/custom-functions.php';

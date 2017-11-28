@@ -4,13 +4,13 @@
  *
  * @package understrap
  */
-add_action( 'after_setup_theme', 'woocommerce_support' );
-if ( ! function_exists( 'woocommerce_support' ) ) {
+add_action( 'after_setup_theme', 'understrap_woocommerce_support' );
+if ( ! function_exists( 'understrap_woocommerce_support' ) ) {
 	/**
 	 * Declares WooCommerce theme support.
 	 */
-	function woocommerce_support() {
-		add_theme_support( 'woocommerce' );
+	function understrap_woocommerce_support() {
+		add_theme_support( 'understrap' );
 		
 		// Add New Woocommerce 3.0.0 Product Gallery support
 		add_theme_support( 'wc-product-gallery-lightbox' );
