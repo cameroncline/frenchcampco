@@ -46,7 +46,6 @@ if ($banner_image) {
 <?php
 	// How It Works Columns
 	$how_columns = get_field('how_columns');
-	$how_count = 0;
 
 	if($how_columns) {
 					
@@ -69,6 +68,11 @@ if ($banner_image) {
 	}
 						
 ?>
+
+<div class="container">
+
+
+</div>
 
 <?php while ( have_posts() ) : the_post(); ?>
 <?php get_template_part( 'loop-templates/content', 'page' ); ?>

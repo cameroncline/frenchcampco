@@ -5,7 +5,6 @@
  * @package understrap
  */
 
-require get_template_directory() . '/inc/theme-settings.php';
 
 // Set the content width based on the theme's design and stylesheet.
 if ( ! isset( $content_width ) ) {
@@ -87,9 +86,6 @@ if ( ! function_exists( 'understrap_setup' ) ) :
 
 		// Set up the WordPress Theme logo feature.
 		add_theme_support( 'custom-logo' );
-
-		// Check and setup theme default settings.
-		understrap_setup_theme_default_settings();
 
 	}
 endif; // understrap_setup.

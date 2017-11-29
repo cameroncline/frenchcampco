@@ -4,13 +4,13 @@
  *
  * @package understrap
  */
-add_action( 'after_setup_theme', 'understrap_woocommerce_support' );
-if ( ! function_exists( 'understrap_woocommerce_support' ) ) {
+add_action( 'after_setup_theme', 'woocommerce_support' );
+if ( ! function_exists( 'woocommerce_support' ) ) {
 	/**
 	 * Declares WooCommerce theme support.
 	 */
-	function understrap_woocommerce_support() {
-		add_theme_support( 'understrap' );
+	function woocommerce_support() {
+		add_theme_support( 'woocommerce' );
 		
 		// Add New Woocommerce 3.0.0 Product Gallery support
 		add_theme_support( 'wc-product-gallery-lightbox' );
@@ -33,7 +33,7 @@ if ( ! function_exists( 'understrap_woocommerce_support' ) ) {
  *
  * @return mixed
  */
-function wc_form_field_args( $args, $key, $value = null ) {
+function understrap_wc_form_field_args( $args, $key, $value = null ) {
 	// Start field type switch case.
 	switch ( $args['type'] ) {
 		/* Targets all select input type elements, except the country and state select input types */
