@@ -4,12 +4,12 @@
  *
  * @package understrap
  */
-add_action( 'after_setup_theme', 'woocommerce_support' );
-if ( ! function_exists( 'woocommerce_support' ) ) {
+add_action( 'after_setup_theme', 'understrap_woocommerce_support' );
+if ( ! function_exists( 'understrap_woocommerce_support' ) ) {
 	/**
 	 * Declares WooCommerce theme support.
 	 */
-	function woocommerce_support() {
+	function understrap_woocommerce_support() {
 		add_theme_support( 'woocommerce' );
 		
 		// Add New Woocommerce 3.0.0 Product Gallery support
@@ -20,7 +20,7 @@ if ( ! function_exists( 'woocommerce_support' ) ) {
 		//add_theme_support( 'wc-product-gallery-slider' );
 
 		// hook in and customizer form fields.
-		add_filter( 'woocommerce_form_field_args', 'wc_form_field_args', 10, 3 );
+		add_filter( 'woocommerce_form_field_args', 'understrap_wc_form_field_args', 10, 3 );
 	}
 }
 /**

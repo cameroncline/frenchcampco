@@ -17,16 +17,15 @@ $sidebar_pos = get_theme_mod( 'understrap_sidebar_position' );
 $banner_image = get_field('banner_image');
 $banner_size = 'banner';
 $text_overlay = get_field('text_over_banner');
-$color_theme = get_field('light_or_dark');
 
 if ($banner_image) {
-	echo '<div class="container-fluid">';
-	echo '<div class="row">';
+	echo '<div class="container-fluid add-gutter">';
+	echo '<div class="page-banner">';
 	echo wp_get_attachment_image( $banner_image, $banner_size );
 	
 		if($text_overlay) {
 			echo '<div class="banner-text">';
-			echo '<div class="text-background ' . $color_theme . '">';
+			echo '<div class="text-background">';
 			echo $text_overlay;
 			echo '</div>';
 			echo '</div>';
@@ -39,40 +38,73 @@ if ($banner_image) {
 ?>
 
 <div class="wrapper" id="page-wrapper">
-<div class="<?php echo esc_attr( $container ); ?>" id="content" tabindex="-1">
+<div class="container-fluid add-gutter" id="content" tabindex="-1">
 <!-- <div class="row"> -->
 <main class="site-main" id="main">
 
 <?php
-	// How It Works Columns
-	$how_columns = get_field('how_columns');
 
-	if($how_columns) {
+if( have_rows('content_sections') ):
+
+	while( have_rows('content_sections') ): the_row(); 
+
+		echo '<div class="row content-sections">';
+
+			if(have_rows('columns')):  
+				
+				while( have_rows('columns')): the_row();
 					
-		echo '<div class="container">';
-		echo '<div class="row">';
-		foreach($how_columns as $how_column) {
-			echo '<div class="col">';
-			echo '<div class="how-columns">';
-			echo $how_column['link'] ? '<a href="' . $how_column['link'] . '">' : '';
-			echo '<p class="how-icons">' . $how_column['icon'] . '</p>';
-			echo '<h3 class="how-header">' . $how_column['title'] . '</h3>';
-			echo '<p>' . $how_column['description'] . '</p>';
-			echo $how_column['link'] ? '</a>' : '';
-			echo '</div>';
-			echo '</div>';
-		}
+					$text  = get_sub_field('text');
+					$span_two = get_sub_field('span_two');
+					$image = get_sub_field('image');
+					$mobile_image = get_sub_field('mobile_image');
+					$field_type = get_sub_field('field_type');
+					$text_placement = get_sub_field('text_placement');
 					
-		echo '</div>';
-		echo '</div>';
-	}
+					echo '<div class="' . ( $span_two ? 'col-lg-8' : 'col-lg' ) . '">';
+						if($field_type == 'text') {
+							echo '<div class="content-section">';
+							echo '<div class="inner-content">';
+							echo $text;
+							echo '</div>';
+							echo '</div>';
+						} elseif ($field_type == 'image') {
+							echo '<div class="image-area">';
+								echo wp_get_attachment_image( $image, $banner_size );
+							echo '</div>';
+						} elseif($field_type == 'full' ) {
+							echo '<div class="full-banner">';
+								if($mobile_image) {
+								echo wp_get_attachment_image( $image, $banner_size, "", ["class" => "desktop-image"] );
+								echo wp_get_attachment_image( $mobile_image, $banner_size, "", ["class" => "mobile-image"]  );
+							} else {
+								echo wp_get_attachment_image( $image, $banner_size );
+							}
+								echo '<div class="text-overlay dark-bg ' . $text_placement . '">';
+								echo $text;
+								echo '</div>';
+							echo '</div>';
+
+						}
 						
+					echo '</div>';
+				
+				endwhile;
+				
+			endif;
+
+		echo '</div>';
+	
+	endwhile;
+
+endif;
+
+if(is_front_page()) {
+	echo do_shortcode('[instashow columns="5" arrows_control="false" speed="1400" auto="6500"]');
+}
+
 ?>
 
-<div class="container">
-
-
-</div>
 
 <?php while ( have_posts() ) : the_post(); ?>
 <?php get_template_part( 'loop-templates/content', 'page' ); ?>

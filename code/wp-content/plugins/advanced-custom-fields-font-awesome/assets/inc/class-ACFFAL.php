@@ -15,7 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ACFFAL
 {
 
-	public $api_endpoint		= 'https://data.jsdelivr.com/v1/package/gh/FortAwesome/Font-Awesome';
+	// public $api_endpoint		= 'https://data.jsdelivr.com/v1/package/gh/FortAwesome/Font-Awesome';
+	public $api_endpoint		= 'https://data.jsdelivr.com/v1/package/resolve/gh/FortAwesome/Font-Awesome@4';
 	public $cdn_baseurl			= 'https://cdn.jsdelivr.net/fontawesome/';
 	public $cdn_filepath		= '/css/font-awesome.min.css';
 	public $override_version	= false;
@@ -32,7 +33,7 @@ class ACFFAL
 
 		if ( $this->override_version ) {
 			$this->current_version = $this->override_version;
-		} else if ( ! $this->current_version ) {
+		} else if ( ! $this->current_version || version_compare( $this->current_version, '5.0.0', '>=' )  ) {
 			$this->current_version = $this->check_latest_version();
 		}
 
@@ -134,6 +135,12 @@ class ACFFAL
 				if ( isset( $response->versions ) && ! empty( $response->versions ) ) {
 					$latest_version = max( $response->versions );
 					$latest_version = ltrim( $latest_version, 'v' );
+
+					if ( $update_option ) {
+						update_option( 'ACFFA_current_version', $latest_version, false );
+					}
+				} else if ( isset( $response->version ) && ! empty( $response->version ) ) {
+					$latest_version = $response->version;
 
 					if ( $update_option ) {
 						update_option( 'ACFFA_current_version', $latest_version, false );

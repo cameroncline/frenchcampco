@@ -54,7 +54,7 @@ function custom_post_type() {
         // Features this CPT supports in Post Editor
         'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields', ),
         // You can associate this CPT with a taxonomy or custom taxonomy. 
-        'taxonomies'          => array( 'genres' ),
+        'taxonomies'          => array( 'category' ),
         /* A hierarchical CPT is like Pages and can have
         * Parent and child items. A non-hierarchical CPT
         * is like Posts.
@@ -84,3 +84,42 @@ function custom_post_type() {
 */
  
 add_action( 'init', 'custom_post_type', 0 );
+
+/* Custom Menus */
+
+function wpb_custom_new_menu() {
+  register_nav_menus(
+    array(
+      'footer-menu-one' => __( 'Footer Menu One' ),
+      'footer-menu-two' => __( 'Footer Menu Two' ),
+      'footer-menu-three' => __( 'Footer Menu Three' )
+    )
+  );
+}
+add_action( 'init', 'wpb_custom_new_menu' );
+
+/* Adding Options Page */
+
+if( function_exists('acf_add_options_page') ) {
+    
+    acf_add_options_page(array(
+        'page_title'    => 'Theme General Settings',
+        'menu_title'    => 'Theme Settings',
+        'menu_slug'     => 'theme-general-settings',
+        'capability'    => 'edit_posts',
+        'redirect'      => false
+    ));
+    
+    acf_add_options_sub_page(array(
+        'page_title'    => 'Theme Header Settings',
+        'menu_title'    => 'Header',
+        'parent_slug'   => 'theme-general-settings',
+    ));
+    
+    acf_add_options_sub_page(array(
+        'page_title'    => 'Theme Footer Settings',
+        'menu_title'    => 'Footer',
+        'parent_slug'   => 'theme-general-settings',
+    ));
+    
+}
