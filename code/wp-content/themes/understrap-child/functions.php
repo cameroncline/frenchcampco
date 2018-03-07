@@ -22,68 +22,87 @@ function theme_enqueue_styles() {
     wp_enqueue_script( 'child-understrap-scripts', get_stylesheet_directory_uri() . '/js/child-theme.min.js', array(), $the_theme->get( 'Version' ), true );
 }
 
-/*
-* Creating a function to create our Inventory
-*/
- 
-function custom_post_type() {
- 
-// Set UI labels for Custom Post Type
-    $labels = array(
-        'name'                => _x( 'Rentals', 'Post Type General Name', 'understrap' ),
-        'singular_name'       => _x( 'Rental', 'Post Type Singular Name', 'understrap' ),
-        'menu_name'           => __( 'Rentals', 'understrap' ),
-        'parent_item_colon'   => __( 'Parent Rental', 'understrap' ),
-        'all_items'           => __( 'All Rentals', 'understrap' ),
-        'view_item'           => __( 'View Rental', 'understrap' ),
-        'add_new_item'        => __( 'Add New Rental', 'understrap' ),
-        'add_new'             => __( 'Add New', 'understrap' ),
-        'edit_item'           => __( 'Edit Rental', 'understrap' ),
-        'update_item'         => __( 'Update Rental', 'understrap' ),
-        'search_items'        => __( 'Search Rental', 'understrap' ),
-        'not_found'           => __( 'Not Found', 'understrap' ),
-        'not_found_in_trash'  => __( 'Not found in Trash', 'understrap' ),
+
+function create_post_type() {
+    register_post_type( 'rental',
+      array(
+        'labels' => array(
+          'name'                => __( 'Rentals' ),
+          'singular_name'       => __( 'Rental' ),
+          'menu_name'           => __( 'Rentals', 'understrap' ),
+          'parent_item_colon'   => __( 'Parent Rental', 'understrap' ),
+          'all_items'           => __( 'All Rentals', 'understrap' ),
+          'view_item'           => __( 'View Rental', 'understrap' ),
+          'add_new_item'        => __( 'Add New Rental', 'understrap' ),
+          'add_new'             => __( 'Add New', 'understrap' ),
+          'edit_item'           => __( 'Edit Rental', 'understrap' ),
+          'update_item'         => __( 'Update Rental', 'understrap' ),
+          'search_items'        => __( 'Search Rental', 'understrap' ),
+          'not_found'           => __( 'Not Found', 'understrap' ),
+          'not_found_in_trash'  => __( 'Not found in Trash', 'understrap' ),
+        ),
+            'public'            => true,
+            'has_archive'       => true,
+            'supports'          => array( 'title', 'revisions', 'custom-fields', ),
+            'taxonomies'        => array( 'category' ),
+      )
     );
-     
-// Set other options for Custom Post Type
-     
-    $args = array(
-        'label'               => __( 'rentals', 'understrap' ),
-        'description'         => __( 'Rental Inventory', 'understrap' ),
-        'labels'              => $labels,
-        // Features this CPT supports in Post Editor
-        'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields', ),
-        // You can associate this CPT with a taxonomy or custom taxonomy. 
-        'taxonomies'          => array( 'category' ),
-        /* A hierarchical CPT is like Pages and can have
-        * Parent and child items. A non-hierarchical CPT
-        * is like Posts.
-        */ 
-        'hierarchical'        => false,
-        'public'              => true,
-        'show_ui'             => true,
-        'show_in_menu'        => true,
-        'show_in_nav_menus'   => true,
-        'show_in_admin_bar'   => true,
-        'menu_position'       => 5,
-        'can_export'          => true,
-        'has_archive'         => true,
-        'exclude_from_search' => false,
-        'publicly_queryable'  => true,
-        'capability_type'     => 'page',
+
+    register_post_type( 'tablescape',
+      array(
+        'labels' => array(
+          'name'                => __( 'Tablescapes' ),
+          'singular_name'       => __( 'Tablescape' ),
+          'menu_name'           => __( 'Tablescapes', 'understrap' ),
+          'parent_item_colon'   => __( 'Parent Tablescape', 'understrap' ),
+          'all_items'           => __( 'All Tablescapes', 'understrap' ),
+          'view_item'           => __( 'View Tablescape', 'understrap' ),
+          'add_new_item'        => __( 'Add New Tablescape', 'understrap' ),
+          'add_new'             => __( 'Add New', 'understrap' ),
+          'edit_item'           => __( 'Edit Tablescape', 'understrap' ),
+          'update_item'         => __( 'Update Tablescape', 'understrap' ),
+          'search_items'        => __( 'Search Tablescapes', 'understrap' ),
+          'not_found'           => __( 'Not Found', 'understrap' ),
+          'not_found_in_trash'  => __( 'Not found in Trash', 'understrap' ),
+        ),
+            'public'            => true,
+            'has_archive'       => true,
+            'supports'          => array( 'title', 'revisions', 'custom-fields', ),
+            'taxonomies'        => array( 'style' ),
+      )
     );
-     
-    // Registering your Custom Post Type
-    register_post_type( 'rentals', $args );
- 
 }
- 
-/* Hook into the 'init' action so that the function
-* Containing our post type registration is not 
-* unnecessarily executed. 
-*/
- 
-add_action( 'init', 'custom_post_type', 0 );
+
+add_action( 'init', 'create_post_type' );
+
+function style_init() {
+	// create a new taxonomy
+    $labels = array(
+		'name'              => _x( 'Styles', 'taxonomy general name', 'textdomain' ),
+		'singular_name'     => _x( 'Style', 'taxonomy singular name', 'textdomain' ),
+		'search_items'      => __( 'Search Styles', 'textdomain' ),
+		'all_items'         => __( 'All Styles', 'textdomain' ),
+		'parent_item'       => __( 'Parent Style', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Style:', 'textdomain' ),
+		'edit_item'         => __( 'Edit Style', 'textdomain' ),
+		'update_item'       => __( 'Update Style', 'textdomain' ),
+		'add_new_item'      => __( 'Add New Style', 'textdomain' ),
+		'new_item_name'     => __( 'New Style Name', 'textdomain' ),
+		'menu_name'         => __( 'Style', 'textdomain' ),
+	);
+
+	$args = array(
+		'hierarchical'      => true,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array( 'slug' => 'style' ),
+	);
+
+	register_taxonomy( 'style', array( 'tablescape' ), $args );
+}
+add_action( 'init', 'style_init' );
 
 /* Custom Menus */
 
