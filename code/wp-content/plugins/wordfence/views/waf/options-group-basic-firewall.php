@@ -25,7 +25,7 @@ if (!isset($collapseable)) {
 					<div class="wf-block-title">
 						<strong><?php _e('Basic Firewall Options', 'wordfence'); ?></strong>
 					</div>
-					<?php if ($collapseable): ?><div class="wf-block-header-action"><div class="wf-block-header-action-disclosure"></div></div><?php endif; ?>
+					<?php if ($collapseable): ?><div class="wf-block-header-action"><div class="wf-block-header-action-disclosure" role="checkbox" aria-checked="<?php echo (wfPersistenceController::shared()->isActive($stateKey) ? 'true' : 'false'); ?>" tabindex="0"></div></div><?php endif; ?>
 				</div>
 			</div>
 			<div class="wf-block-content">
@@ -50,13 +50,13 @@ if (!isset($collapseable)) {
 								<script type="application/javascript">
 									(function($) {
 										$(function() {
-											$('#input-wafStatus').select2({
+											$('#input-wafStatus').wfselect2({
 												minimumResultsForSearch: -1,
 												width: '200px'
 											}).on('change', function() {
 												var select = $(this);
 												var value = select.val();
-												var container = $($(this).data('select2').$container);
+												var container = $($(this).data('wfselect2').$container);
 												container.removeClass('wafStatus-enabled wafStatus-learning-mode wafStatus-disabled')
 													.addClass('wafStatus-' + value);
 
@@ -194,7 +194,6 @@ if (!isset($collapseable)) {
 										}
 
 										$('#wf-waf-install-continue, #wf-waf-uninstall-continue').toggleClass('wf-disabled', matchCount != backupsAvailable.length);
-										$('#wf-waf-install-continue, #wf-waf-uninstall-continue').text($('.wf-manual-waf-config').is(':visible') ? 'Close' : 'Continue');
 									};
 
 									var installUninstallResponseHandler = function(action, res) {
@@ -298,7 +297,7 @@ if (!isset($collapseable)) {
 												}
 											});
 
-											$('#wf-waf-server-config').select2({
+											$('#wf-waf-server-config').wfselect2({
 												minimumResultsForSearch: -1,
 												width: WFAD.isSmallScreen ? '300px' : '500px'
 											});
@@ -323,24 +322,26 @@ if (!isset($collapseable)) {
 												var el = $(this);
 												if (manualNotice.length) {
 													if (el.val() == 'manual') {
-														$('.wf-waf-automatic-only').hide();
 														manualNotice.fadeIn(400, function () {
 															$.wfcolorbox.resize();
 														});
 													}
 													else {
-														$('.wf-waf-automatic-only').show();
 														manualNotice.fadeOut(400, function () {
 															$.wfcolorbox.resize();
 														});
 													}
 												}
-												else {
-													$('.wf-waf-automatic-only').show();
-												}
 												
+												var identifier = '.wf-waf-backups-' + el.val().replace(/[^a-z0-9\-]/i, '');
 												$('.wf-waf-backups').hide();
-												$('.wf-waf-backups-' + el.val().replace(/[^a-z0-9\-]/i, '')).show();
+												$(identifier).show();
+												if ($(identifier).find('.wf-waf-backup-file-list').children().length > 0) {
+													$('.wf-waf-download-instructions').show();
+												}
+												else {
+													$('.wf-waf-download-instructions').hide();
+												}
 
 												if (nginxNotice.length) { //Install only
 													if (el.val() == 'nginx') {
@@ -365,11 +366,6 @@ if (!isset($collapseable)) {
 											$('#wf-waf-install-continue').on('click', function(e) {
 												e.preventDefault();
 												e.stopPropagation();
-
-												if ($('.wf-manual-waf-config').is(':visible')) {
-													WFAD.colorboxClose();
-													return;
-												}
 
 												var serverConfiguration = $('#wf-waf-server-config').val();
 												var currentAutoPrepend = $('#wf-waf-include-prepend .wf-active').data('optionValue');
@@ -416,7 +412,7 @@ if (!isset($collapseable)) {
 									});
 
 									if (window.location.hash) {
-										var hashes = window.location.hash.split('#');
+										var hashes = WFAD.parseHashes();
 										for (var i = 0; i < hashes.length; i++) {
 											if (hashes[i] == 'configureAutoPrepend') {
 												$('#wf-waf-install').trigger('click');
@@ -430,7 +426,7 @@ if (!isset($collapseable)) {
 									}
 
 									$(window).on('hashchange', function () {
-										var hashes = window.location.hash.split('#');
+										var hashes = WFAD.parseHashes();
 										for (var i = 0; i < hashes.length; i++) {
 											if (hashes[i] == 'configureAutoPrepend') {
 												$('#wf-waf-install').trigger('click');
@@ -456,7 +452,7 @@ if (!isset($collapseable)) {
 						<?php else: ?>
 							<p class="wf-no-top"><?php _e('This feature blocks all traffic from IPs with a high volume of recent malicious activity using Wordfence\'s real-time blacklist.', 'wordfence'); ?></p>
 							<div class="wf-option wf-option-switch wf-padding-add-bottom" data-option-name="disableWAFBlacklistBlocking" data-original-value="<?php echo $config->getConfig('disableWAFBlacklistBlocking') ? '1': '0'; ?>">
-								<ul class="wf-switch">
+								<ul class="wf-switch" role="radiogroup">
 									<?php
 									$states = array(
 										array('value' => '1', 'label' => __('Disabled', 'wordfence')),
@@ -465,7 +461,7 @@ if (!isset($collapseable)) {
 									
 									foreach ($states as $s):
 										?>
-										<li<?php if ($s['value'] == ($config->getConfig('disableWAFBlacklistBlocking') ? '1': '0')) { echo ' class="wf-active"'; } ?> data-option-value="<?php echo esc_attr($s['value']); ?>"><?php echo esc_html($s['label']); ?></li>
+										<li<?php if ($s['value'] == ($config->getConfig('disableWAFBlacklistBlocking') ? '1': '0')) { echo ' class="wf-active"'; } ?> data-option-value="<?php echo esc_attr($s['value']); ?>" role="radio" aria-checked="<?php echo (($s['value'] == ($config->getConfig('disableWAFBlacklistBlocking') ? '1': '0')) ? 'true' : 'false'); ?>" tabindex="0"><?php echo esc_html($s['label']); ?></li>
 									<?php endforeach; ?>
 								</ul>
 							</div>

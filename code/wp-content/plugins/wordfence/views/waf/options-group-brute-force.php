@@ -25,7 +25,7 @@ if (!isset($collapseable)) {
 					<div class="wf-block-title">
 						<strong><?php _e('Brute Force Protection', 'wordfence'); ?></strong>
 					</div>
-					<?php if ($collapseable): ?><div class="wf-block-header-action"><div class="wf-block-header-action-disclosure"></div></div><?php endif; ?>
+					<?php if ($collapseable): ?><div class="wf-block-header-action"><div class="wf-block-header-action-disclosure" role="checkbox" aria-checked="<?php echo (wfPersistenceController::shared()->isActive($stateKey) ? 'true' : 'false'); ?>" tabindex="0"></div></div><?php endif; ?>
 				</div>
 			</div>
 			<div class="wf-block-content">
@@ -247,7 +247,7 @@ if (!isset($collapseable)) {
 							'enabledValue' => 1,
 							'disabledValue' => 0,
 							'value' => wfConfig::get('other_WFNet') ? 1 : 0,
-							'title' => __('Participate in the Real-Time WordPress Security Network', 'wordfence'),
+							'title' => __('Participate in the Real-Time Wordfence Security Network', 'wordfence'),
 							'helpLink' => wfSupportController::supportURL(wfSupportController::ITEM_FIREWALL_WAF_OPTION_PARTICIPATE_WFSN),
 						))->render();
 						?>
