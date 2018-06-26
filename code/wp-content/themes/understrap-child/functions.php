@@ -22,6 +22,19 @@ function theme_enqueue_styles() {
     wp_enqueue_script( 'child-understrap-scripts', get_stylesheet_directory_uri() . '/js/child-theme.min.js', array(), $the_theme->get( 'Version' ), true );
 }
 
+// Adding Flex Slider
+function my_add_scripts() {
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('flexslider', get_stylesheet_directory_uri().'/js/jquery.flexslider-min.js', array('jquery'));
+    wp_enqueue_script('flexslider-init', get_stylesheet_directory_uri().'/js/flexslider-init.js', array('jquery', 'flexslider'));
+}
+add_action('wp_enqueue_scripts', 'my_add_scripts');
+
+function my_add_styles() {
+    wp_enqueue_style('flexslider', get_stylesheet_directory_uri().'/css/flexslider.css');
+}
+add_action('wp_enqueue_scripts', 'my_add_styles');
+
 
 function create_post_type() {
     register_post_type( 'rental',
