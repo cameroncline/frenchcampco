@@ -1,0 +1,130 @@
+#archive-wrapper .type-rental {
+    margin: 30px 0;
+}
+
+.entry-title {
+    text-transform: none;
+    font-weight: normal;
+    padding: 5px 0;
+    
+    a {
+       color: $green;
+    }
+}
+
+.rental-content {
+    text-align: center;
+    padding-top: 30px;
+
+    @include media-breakpoint-up(lg) {
+        padding-top: 10%;
+    }
+
+    @include media-breakpoint-down(md) {
+        background: $grey;
+        padding: 60px 15px;
+    }
+
+    h1 {
+        text-transform: uppercase;
+        font-size: 2rem;
+        margin-bottom: 20px;
+    
+        &::after {
+            content: '';
+            border-bottom: 2px solid $green;
+            width: 60px;
+            display: block;
+            padding-top: 20px;
+            margin: 0 auto;
+        }
+    }
+
+    h3 {
+        margin-top: 3rem;
+        color: $green;
+        font-size: 1rem;
+    }
+
+    .pricing-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .reserve-button {
+        margin-top: 2rem;
+    }
+
+    .btn-cont {
+        margin-top: 4rem;
+    }
+}
+
+#featured-tablescapes,
+#loved-items,
+#more-type,
+#more-style {
+    margin: 30px 0;
+}
+
+#rental-product {
+    margin-bottom: 30px;
+}
+
+#featured-tablescapes {
+    img {
+        opacity: .8;
+    }
+
+    .tablescape-info {
+        text-align: center;
+
+        @include media-breakpoint-up(lg) {
+            position: absolute;
+            top: 50%;   
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+
+        @include media-breakpoint-down(md) {
+            padding: 60px 15px;
+            background: $grey;
+        }
+    }
+
+    .tablescape-title {
+        text-transform: none;
+        font-size: 2rem;
+        letter-spacing: normal;
+        font-weight: 900;
+
+        @include media-breakpoint-up(lg) {
+            font-size: 3.5rem;
+        }
+    }
+
+    h4 {
+        font-size: 1rem;
+    }
+}
+
+.rental-tile-name {
+    position: absolute;
+    top: 50%;   
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.tile-title {
+    background: $grey;
+    height: 100%;
+    width: 100%;
+}
+
+.tile-content {
+    position: absolute;
+    top: 50%;   
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+}

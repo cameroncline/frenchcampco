@@ -1,0 +1,94 @@
+.btn {
+    padding: .5rem 1.5rem;
+    text-transform: uppercase;
+	letter-spacing: .2rem;
+}
+
+.btn-primary {
+    background: $green;
+    border: $green;
+    &:hover {
+        background: #3996a2;
+    }
+}
+
+.btn-secondary {
+    background: $pink;
+    border: $pink;
+    &:hover {
+        background: #e0a9a4;
+    }
+}
+
+.btn-outline-dark {
+    border-color: $green;
+    color: $green;
+    &:hover {
+        background: $green;
+    }
+}
+
+.btn-outline-light {
+    &:hover {
+        color: $green; 
+    }
+}
+
+// Underline Animation
+.custom-underline-text,
+.nav-link	{
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  color: #212529;
+  font-family: $body;
+  text-transform: uppercase;
+  font-size: 1em;
+  padding-bottom: 2px;
+  letter-spacing: .15rem;
+}
+
+.custom-underline-text,
+.custom-underline-text:hover,
+.custom-underline-text:focus,
+.custom-underline-text:active,
+.nav-link,
+.nav-link:hover,
+.nav-link:focus,
+.nav-link:active {
+  text-decoration: none;
+}
+
+.custom-underline-text::after,
+.nav-link::after {
+    content:"";
+    position: absolute;
+    background-color: rgba(236,181,176,.6);
+    transition: .2s ease-in all;
+}
+
+.btn-cont .custom-underline-text::after,
+.menu-item .nav-link::after {
+    top:100%;
+    height:3px !important;
+    width:50%;
+    left:25%;
+}
+
+.btn-cont:hover .custom-underline-text::after,
+.menu-item:hover .nav-link::after{
+    width:90%;
+    left:5%;
+    background-color:rgba(32,86,93,0.6);
+    transition:.8s ease all;
+}
+
+.dark-bg {
+    color: #fff;
+    &:hover {
+            color: #fff;
+    }
+    &.custom-underline-text::after {
+        background-color:rgba(255,255,255,.6);
+    }
+ }
