@@ -157,7 +157,7 @@ class wordfenceHash {
 			$this->alertedOnUnknownWordPressVersion = true;
 			$added = $this->engine->addIssue(
 				'coreUnknown',
-				2,
+				wfIssues::SEVERITY_MEDIUM,
 				'coreUnknown' . $wp_version,
 				'coreUnknown' . $wp_version,
 				'Unknown WordPress core version: ' . $wp_version,
@@ -192,7 +192,7 @@ class wordfenceHash {
 	public function getSuspectedFiles() {
 		return array_keys($this->suspectedFiles);
 	}
-	public function run($engine){ //base path and 'only' is a list of files and dirs in the bast that are the only ones that should be processed. Everything else in base is ignored. If only is empty then everything is processed.
+	public function run($engine){ //base path and 'only' is a list of files and dirs in the base that are the only ones that should be processed. Everything else in base is ignored. If only is empty then everything is processed.
 		if($this->totalForks > 1000){
 			throw new Exception("Wordfence file scanner detected a possible infinite loop. Exiting on file: " . $this->stoppedOnFile);
 		}
@@ -251,8 +251,8 @@ class wordfenceHash {
 					$md5 = $malwareList[$i][1];
 					$name = $malwareList[$i][2];
 					$added = $this->engine->addIssue(
-						'file', 
-						1, 
+						'file',
+						wfIssues::SEVERITY_CRITICAL,
 						$this->path . $file, 
 						$md5,
 						'This file is suspected malware: ' . $file,
@@ -309,7 +309,10 @@ class wordfenceHash {
 					
 					$this->_checkForTimeout($file, $indexedFiles);
 					if ($this->_shouldHashFile($file)) {
-						$indexedFiles[] = $relativeFile;
+						$resolvedFile = realpath($file);
+						if ($resolvedFile) {
+							$indexedFiles[] = substr($resolvedFile, $this->striplen);
+						}
 					}
 					else {
 						wordfence::status(4, 'info', "Skipping unneeded hash: {$file}");
@@ -411,9 +414,13 @@ class wordfenceHash {
 	}
 	private function _shouldProcessPath($path) {
 		$file = substr($path, $this->striplen);
-		$exclude = wordfenceScanner::getExcludeFilePattern(wordfenceScanner::EXCLUSION_PATTERNS_USER);
-		if ($exclude && preg_match($exclude, $file)) {
-			return false;
+		$excludePatterns = wordfenceScanner::getExcludeFilePattern(wordfenceScanner::EXCLUSION_PATTERNS_USER);
+		if ($excludePatterns) {
+			foreach ($excludePatterns as $pattern) {
+				if (preg_match($pattern, $file)) {
+					return false;
+				}
+			}
 		}
 		
 		$realPath = realpath($path);
@@ -439,7 +446,7 @@ class wordfenceHash {
 		}
 		
 		wfUtils::beginProcessingFile($file);
-		$wfHash = self::wfHash($realFile);
+		$wfHash = self::hashFile($realFile);
 		$this->engine->scanController()->incrementSummaryItem(wfScanner::SUMMARY_SCANNED_FILES);
 		if ($wfHash) {
 			$md5 = strtoupper($wfHash[0]);
@@ -452,7 +459,11 @@ class wordfenceHash {
 			$knownFileExclude = wordfenceScanner::getExcludeFilePattern(wordfenceScanner::EXCLUSION_PATTERNS_KNOWN_FILES);
 			$allowKnownFileScan = true;
 			if ($knownFileExclude) {
-				$allowKnownFileScan = !preg_match($knownFileExclude, $realFile);
+				foreach ($knownFileExclude as $pattern) {
+					if (preg_match($pattern, $realFile)) {
+						$allowKnownFileScan = false;
+					}
+				}
 			}
 
 			if ($allowKnownFileScan) {
@@ -467,7 +478,7 @@ class wordfenceHash {
 							if ($fileContents && (!preg_match('/<\?' . 'php[\r\n\s\t]*\/\/[\r\n\s\t]*Silence is golden\.[\r\n\s\t]*(?:\?>)?[\r\n\s\t]*$/s', $fileContents))) {
 								$this->engine->addPendingIssue(
 									'knownfile',
-									1,
+									wfIssues::SEVERITY_HIGH,
 									'coreModified' . $file,
 									'coreModified' . $file . $md5,
 									'WordPress core file modified: ' . $file,
@@ -503,7 +514,7 @@ class wordfenceHash {
 								$cKey = $this->knownFiles['plugins'][$file][2];
 								$this->engine->addPendingIssue(
 									'knownfile',
-									2,
+									wfIssues::SEVERITY_MEDIUM,
 									'modifiedplugin' . $file,
 									'modifiedplugin' . $file . $md5,
 									'Modified plugin file: ' . $file,
@@ -543,7 +554,7 @@ class wordfenceHash {
 								$cKey = $this->knownFiles['themes'][$file][2];
 								$this->engine->addPendingIssue(
 									'knownfile',
-									2,
+									wfIssues::SEVERITY_MEDIUM,
 									'modifiedtheme' . $file,
 									'modifiedtheme' . $file . $md5,
 									'Modified theme file: ' . $file,
@@ -573,7 +584,7 @@ class wordfenceHash {
 							if ($this->isPreviousCoreFile($shac)) {
 								$added = $this->engine->addIssue(
 									'knownfile',
-									2,
+									wfIssues::SEVERITY_LOW,
 									'coreUnknown' . $file,
 									'coreUnknown' . $file . $md5,
 									sprintf(__('Old WordPress core file not removed during update: %s', 'wordfence'), $file),
@@ -590,7 +601,7 @@ class wordfenceHash {
 							else {
 								$added = $this->engine->addIssue(
 									'knownfile',
-									2,
+									wfIssues::SEVERITY_HIGH,
 									'coreUnknown' . $file,
 									'coreUnknown' . $file . $md5,
 									'Unknown file in WordPress core: ' . $file,
@@ -683,7 +694,7 @@ class wordfenceHash {
 			$this->engine->checkForKill();
 		}
 	}
-	public static function wfHash($file){
+	public static function hashFile($file) {
 		$fp = @fopen($file, "rb");
 		if (!$fp) {
 			return false;
@@ -713,9 +724,13 @@ class wordfenceHash {
 		}
 		
 		//Excluded file, return false
-		$excludePattern = wordfenceScanner::getExcludeFilePattern(wordfenceScanner::EXCLUSION_PATTERNS_USER | wordfenceScanner::EXCLUSION_PATTERNS_MALWARE); 
-		if ($excludePattern && preg_match($excludePattern, $file)) {
-			return false;
+		$excludePatterns = wordfenceScanner::getExcludeFilePattern(wordfenceScanner::EXCLUSION_PATTERNS_USER | wordfenceScanner::EXCLUSION_PATTERNS_MALWARE); 
+		if ($excludePatterns) {
+			foreach ($excludePatterns as $pattern) {
+				if (preg_match($pattern, $file)) {
+					return false;
+				}
+			}
 		}
 		
 		//Unknown file in a core location

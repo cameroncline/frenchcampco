@@ -626,6 +626,9 @@ class wfScanner {
 		
 		$runningStatus[$stageID]['started'] += 1;
 		wfConfig::set_ser('scanStageStatuses', $runningStatus, false, wfConfig::DONT_AUTOLOAD);
+		if (wfCentral::isConnected()) {
+			wfCentral::updateScanStatus($runningStatus);
+		}
 	}
 	
 	/**
@@ -641,7 +644,7 @@ class wfScanner {
 		
 		$runningStatus = wfConfig::get_ser('scanStageStatuses', array(), false);
 		
-		if ($runningStatus[$stageID]['status'] == self::STATUS_RUNNING && ($status == wfIssues::STATUS_PROBLEM || $status == wfIssues::STATUS_FAILED)) {
+		if ($runningStatus[$stageID]['status'] == self::STATUS_RUNNING && ($status == wfIssues::STATUS_PROBLEM)) {
 			$runningStatus[$stageID]['status'] = self::STATUS_RUNNING_WARNING;
 		}
 		
@@ -656,6 +659,10 @@ class wfScanner {
 		}
 		
 		wfConfig::set_ser('scanStageStatuses', $runningStatus, false, wfConfig::DONT_AUTOLOAD);
+		if (wfCentral::isConnected()) {
+			wfCentral::updateScanStatus($runningStatus);
+		}
+
 	}
 	
 	/**
