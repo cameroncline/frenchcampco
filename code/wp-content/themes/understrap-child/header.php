@@ -21,7 +21,7 @@ $container = get_theme_mod( 'understrap_container_type' );
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 	<?php wp_head(); ?>
-	<link href="https://fonts.googleapis.com/css?family=Jacques+Francois|Montserrat|Playfair+Display:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Jacques+Francois|Montserrat|Playfair+Display:400,700|Oswald:300,400,600|Open+Sans:400,700" rel="stylesheet">
 
 </head>
 

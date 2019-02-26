@@ -27,14 +27,21 @@ $container   = get_theme_mod( 'understrap_container_type' );
 
 				<?php if ( have_posts() ) : ?>
 
-					<header class="page-header">
+					<header class="page-header short">
 						<?php
 						the_archive_title( '<h1 class="page-title">', '</h1>' );
-						the_archive_description( '<div class="taxonomy-description">', '</div>' );
+						echo '<p>Below you will find our collection of items we currently have in our inventory. If you are looking for something specific and don’t see it below, contact us! We love a challenge.</p>';
 						?>
 					</header><!-- .page-header -->
 
-					<?php /* Start the Loop */ ?>
+					<?php
+
+					// Collections Menu
+					get_template_part( 'parts/collections', 'menu' );
+
+					?>
+
+					<div class="row">
 					<?php while ( have_posts() ) : the_post(); ?>
 
 						<?php
@@ -54,11 +61,18 @@ $container   = get_theme_mod( 'understrap_container_type' );
 					<?php get_template_part( 'loop-templates/content', 'none' ); ?>
 
 				<?php endif; ?>
+		</div>
 
 			</main><!-- #main -->
 
 			<!-- The pagination component -->
 			<?php understrap_pagination(); ?>
+
+			<?php // Collections Menu
+			
+				get_template_part( 'parts/collections', 'cta' );
+
+			?>
 
 		</div><!-- #primary -->
 

@@ -22,18 +22,13 @@ function theme_enqueue_styles() {
     wp_enqueue_script( 'child-understrap-scripts', get_stylesheet_directory_uri() . '/js/child-theme.min.js', array(), $the_theme->get( 'Version' ), true );
 }
 
-// Adding Flex Slider
-function my_add_scripts() {
-    wp_enqueue_script('jquery');
-    wp_enqueue_script('flexslider', get_stylesheet_directory_uri().'/js/jquery.flexslider-min.js', array('jquery'));
-    wp_enqueue_script('flexslider-init', get_stylesheet_directory_uri().'/js/flexslider-init.js', array('jquery', 'flexslider'));
+add_action( 'after_setup_theme', 'custom_image_sizes' );
+function custom_image_sizes () {
+	add_image_size( 'rental-gallery', 445, 550, true ); // (cropped)
+    add_image_size( 'term-header', 1070, 580, true ); // (cropped)
+    add_image_size( 'rental-image', 900, 800, true ); // (cropped)
+    add_image_size( 'half-fold', 1920, 500, true ); // (cropped)
 }
-add_action('wp_enqueue_scripts', 'my_add_scripts');
-
-function my_add_styles() {
-    wp_enqueue_style('flexslider', get_stylesheet_directory_uri().'/css/flexslider.css');
-}
-add_action('wp_enqueue_scripts', 'my_add_styles');
 
 
 function create_post_type() {
@@ -56,52 +51,54 @@ function create_post_type() {
         ),
             'public'            => true,
             'has_archive'       => true,
-            'supports'          => array( 'title', 'revisions', 'custom-fields', ),
-            'taxonomies'        => array( 'category' ),
-      )
-    );
-
-    register_post_type( 'tablescape',
-      array(
-        'labels' => array(
-          'name'                => __( 'Tablescapes' ),
-          'singular_name'       => __( 'Tablescape' ),
-          'menu_name'           => __( 'Tablescapes', 'understrap' ),
-          'parent_item_colon'   => __( 'Parent Tablescape', 'understrap' ),
-          'all_items'           => __( 'All Tablescapes', 'understrap' ),
-          'view_item'           => __( 'View Tablescape', 'understrap' ),
-          'add_new_item'        => __( 'Add New Tablescape', 'understrap' ),
-          'add_new'             => __( 'Add New', 'understrap' ),
-          'edit_item'           => __( 'Edit Tablescape', 'understrap' ),
-          'update_item'         => __( 'Update Tablescape', 'understrap' ),
-          'search_items'        => __( 'Search Tablescapes', 'understrap' ),
-          'not_found'           => __( 'Not Found', 'understrap' ),
-          'not_found_in_trash'  => __( 'Not found in Trash', 'understrap' ),
-        ),
-            'public'            => true,
-            'has_archive'       => true,
-            'supports'          => array( 'title', 'revisions', 'custom-fields', ),
-            'taxonomies'        => array( 'style' ),
+            'supports'          => array( 'title', 'revisions', 'custom-fields', 'thumbnail' ),
+            'taxonomies'        => array( 'style', 'type', 'tablescape' ),
       )
     );
 }
 
-add_action( 'init', 'create_post_type' );
-
 function style_init() {
 	// create a new taxonomy
     $labels = array(
-		'name'              => _x( 'Styles', 'taxonomy general name', 'textdomain' ),
-		'singular_name'     => _x( 'Style', 'taxonomy singular name', 'textdomain' ),
-		'search_items'      => __( 'Search Styles', 'textdomain' ),
-		'all_items'         => __( 'All Styles', 'textdomain' ),
-		'parent_item'       => __( 'Parent Style', 'textdomain' ),
-		'parent_item_colon' => __( 'Parent Style:', 'textdomain' ),
-		'edit_item'         => __( 'Edit Style', 'textdomain' ),
-		'update_item'       => __( 'Update Style', 'textdomain' ),
-		'add_new_item'      => __( 'Add New Style', 'textdomain' ),
-		'new_item_name'     => __( 'New Style Name', 'textdomain' ),
-		'menu_name'         => __( 'Style', 'textdomain' ),
+		'name'              => _x( 'Style', 'taxonomy general name', 'frenchcampco' ),
+		'singular_name'     => _x( 'Style', 'taxonomy singular name', 'frenchcampco' ),
+		'search_items'      => __( 'Search Styles', 'frenchcampco' ),
+		'all_items'         => __( 'All Styles', 'frenchcampco' ),
+		'parent_item'       => __( 'Parent Style', 'frenchcampco' ),
+		'parent_item_colon' => __( 'Parent Style:', 'frenchcampco' ),
+		'edit_item'         => __( 'Edit Style', 'frenchcampco' ),
+		'update_item'       => __( 'Update Style', 'frenchcampco' ),
+		'add_new_item'      => __( 'Add New Style', 'frenchcampco' ),
+		'new_item_name'     => __( 'New Style Name', 'frenchcampco' ),
+		'menu_name'         => __( 'Styles', 'frenchcampco' ),
+	);
+
+	$args = array(
+		'hierarchical'      => false,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array( 'slug' => 'styles' ),
+	);
+
+	register_taxonomy( 'style', array( 'rental' ), $args );
+}
+
+function type_init() {
+	// create a new taxonomy
+    $labels = array(
+		'name'              => _x( 'Rental Type', 'taxonomy general name', 'frenchcampco' ),
+		'singular_name'     => _x( 'Rental Type', 'taxonomy singular name', 'frenchcampco' ),
+		'search_items'      => __( 'Search Types', 'frenchcampco' ),
+		'all_items'         => __( 'All Types', 'frenchcampco' ),
+		'parent_item'       => __( 'Parent Type', 'frenchcampco' ),
+		'parent_item_colon' => __( 'Parent Type:', 'frenchcampco' ),
+		'edit_item'         => __( 'Edit Type', 'frenchcampco' ),
+		'update_item'       => __( 'Update Type', 'frenchcampco' ),
+		'add_new_item'      => __( 'Add New Type', 'frenchcampco' ),
+		'new_item_name'     => __( 'New Type Name', 'frenchcampco' ),
+		'menu_name'         => __( 'Types', 'frenchcampco' ),
 	);
 
 	$args = array(
@@ -110,12 +107,46 @@ function style_init() {
 		'show_ui'           => true,
 		'show_admin_column' => true,
 		'query_var'         => true,
-		'rewrite'           => array( 'slug' => 'style' ),
+        'rewrite'           => array( 'slug' => 'types' ),
+        'args'              => array( 'orderby' => 'term_order' ),
+        'sort'              => true,
 	);
 
-	register_taxonomy( 'style', array( 'tablescape' ), $args );
+	register_taxonomy( 'type', array( 'rental' ), $args );
 }
+
+function tablescape_init() {
+	// create a new taxonomy
+    $labels = array(
+		'name'              => _x( 'Tablescapes', 'taxonomy general name', 'frenchcampco' ),
+		'singular_name'     => _x( 'Tablescape', 'taxonomy singular name', 'frenchcampco' ),
+		'search_items'      => __( 'Search Tablescapes', 'frenchcampco' ),
+		'all_items'         => __( 'All Tablescapes', 'frenchcampco' ),
+		'parent_item'       => __( 'Parent Tablescape', 'frenchcampco' ),
+		'parent_item_colon' => __( 'Parent Tablescape:', 'frenchcampco' ),
+		'edit_item'         => __( 'Edit Tablescape', 'frenchcampco' ),
+		'update_item'       => __( 'Update Tablescape', 'frenchcampco' ),
+		'add_new_item'      => __( 'Add New Tablescape', 'frenchcampco' ),
+		'new_item_name'     => __( 'New Tablescape Name', 'frenchcampco' ),
+		'menu_name'         => __( 'Tablescapes', 'frenchcampco' ),
+	);
+
+	$args = array(
+		'hierarchical'      => true,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array( 'slug' => 'tablescapes' ),
+	);
+
+	register_taxonomy( 'tablescape', array( 'rental' ), $args );
+}
+
+add_action( 'init', 'type_init' );
 add_action( 'init', 'style_init' );
+add_action( 'init', 'tablescape_init' );
+add_action( 'init', 'create_post_type' );
 
 /* Custom Menus */
 
@@ -155,3 +186,17 @@ if( function_exists('acf_add_options_page') ) {
     ));
     
 }
+
+// Removing Before and After from Archive Titles
+add_filter( 'get_the_archive_title', function ($title) {
+    if ( is_category() ) {
+            $title = single_cat_title( '', false );
+        } elseif ( is_tag() ) {
+            $title = single_tag_title( '', false );
+        } elseif ( is_author() ) {
+            $title = single_tag_title( '', false );
+        } elseif ( is_tax() ) {
+			$title = single_tag_title( '', false );
+		}
+    return $title;
+});

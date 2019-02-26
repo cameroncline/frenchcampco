@@ -11,29 +11,13 @@
  */
 
 get_header();
+$term = get_queried_object();
 
 $container   = get_theme_mod( 'understrap_container_type' );
 $sidebar_pos = get_theme_mod( 'understrap_sidebar_position' );
-$banner_image = get_field('banner_image');
+$banner_image = get_field('banner_image', $term);
 $banner_size = 'banner';
-$text_overlay = get_field('text_over_banner');
-
-if ($banner_image) {
-	echo '<div class="container-fluid add-gutter">';
-	echo '<div class="page-banner">';
-	echo wp_get_attachment_image( $banner_image, $banner_size );
-	
-		if($text_overlay) {
-			echo '<div class="banner-text">';
-			echo '<div class="text-background">';
-			echo $text_overlay;
-			echo '</div>';
-			echo '</div>';
-		}
-
-	echo '</div>';
-	echo '</div>';
-}
+$text_overlay = get_field('text_over_banner', $term);
 
 ?>
 
@@ -44,22 +28,22 @@ if ($banner_image) {
 
 <?php
 
-if( have_rows('content_sections') ):
+if( have_rows('content_sections', $term) ):
 
-	while( have_rows('content_sections') ): the_row(); 
+	while( have_rows('content_sections', $term) ): the_row(); 
 
 		echo '<div class="row content-sections">';
 
-			if(have_rows('columns')):  
+			if(have_rows('columns', $term)):  
 				
-				while( have_rows('columns')): the_row();
+				while( have_rows('columns', $term)): the_row();
 					
-					$text  = get_sub_field('text');
-					$span_two = get_sub_field('span_two');
-					$image = get_sub_field('image');
-					$mobile_image = get_sub_field('mobile_image');
-					$field_type = get_sub_field('field_type');
-					$text_placement = get_sub_field('text_placement');
+					$text  = get_sub_field('text', $term);
+					$span_two = get_sub_field('span_two', $term);
+					$image = get_sub_field('image', $term);
+					$mobile_image = get_sub_field('mobile_image', $term);
+					$field_type = get_sub_field('field_type', $term);
+					$text_placement = get_sub_field('text_placement', $term);
 					
 					echo '<div class="' . ( $span_two ? 'col-lg-8' : 'col-lg' ) . '">';
 						if($field_type == 'text') {
@@ -80,7 +64,7 @@ if( have_rows('content_sections') ):
 							} else {
 								echo wp_get_attachment_image( $image, $banner_size );
 							}
-								echo '<div class="text-overlay ' . $text_placement . '">';
+								echo '<div class="text-overlay dark-bg ' . $text_placement . '">';
 								echo $text;
 								echo '</div>';
 							echo '</div>';
@@ -99,15 +83,11 @@ if( have_rows('content_sections') ):
 
 endif;
 
-if(is_front_page()) {
-	echo do_shortcode('[instashow columns="5" arrows_control="false" speed="1400" auto="6500"]');
-}
-
 ?>
 
 
 <?php while ( have_posts() ) : the_post(); ?>
-<?php get_template_part( 'loop-templates/content', 'page' ); ?>
+<?php get_template_part( 'loop-templates/content', get_post_format() ); ?>
 <?php endwhile; // end of the loop. ?>
 
 </main><!-- #main -->
